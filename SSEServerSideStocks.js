@@ -91,8 +91,7 @@ function buildReturn() {
 	"ticker": stock.ticker,
 	"name": stock.name,
 	"price": stock.last,
-	"volume": stock.volume,
-	"timestamp": new Date().toISOString() //Added time into SSE return instead of actively on HTML.
+	"volume": stock.volume
     };
     return JSON.stringify(returnVal);
 }

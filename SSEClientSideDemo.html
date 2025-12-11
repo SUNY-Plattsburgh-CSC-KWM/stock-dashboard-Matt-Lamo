@@ -8,60 +8,41 @@
     <div id="app"></div>
     <div id="table">
       <table>
+        <tr>
+          <th>Ticker</th>
+          <th>Name</th>
+          <th>Last Trade Price</th>
+          <th>Last Trade Volume</th>
+          <th>Visualization</th>
+        </tr>
       </table>
     </div>
-    <!-- Load React, ReactDOM, and Babel from cdnjs (development UMD builds). -->
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="react/react.js"></script>
+    <script src="react/react-dom.js"></script>
+    <script src="react/babel.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.28.4/babel.js" integrity="sha512-tAxtuVSKZzhVD+PZrFAkFx3G7mrYVPYmsMVc8HH2zWL58f34RfTt218zJGbHu1XCycSlEa0tcLNhwXEy5x1O1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script type="text/babel">
 
       const useState = React.useState;
       const useEffect = React.useEffect;
       
       function App() {
-	      const [stocks, setStocks] = useState([]);
+	      const [time, setTime] = useState('');
 	      useEffect(() => {
-        const eventSource = new EventSource('http://localhost:31415/stocks');
+        const eventSource = new EventSource('http://localhost:31415/events');
         eventSource.onmessage = (event) => {
 		    const data = JSON.parse(event.data);
-		    console.log('data received:', data);
-		    setStocks(prev => [data, ...prev.slice(0, 19)]);
-        };
-        eventSource.onerror = (error) => {
-          console.error('SSE connection error:', error);
-          eventSource.close();
+		    setTime(data.time);
         };
         return () => eventSource.close();
 	      }, []);
 	      return (
 		    <div>
-		    <h1>Server-Sent Events Demo (SSE from localhost:31415)</h1>
-		    <p>Latest {stocks.length} stocks:</p>
-		    <table border="1" style={{borderCollapse: 'collapse', width: '100%'}}>
-		      <thead>
-		        <tr>
-		          <th>Ticker</th>
-		          <th>Name</th>
-		          <th>Price</th>
-		          <th>Volume</th>
-		          <th>Time</th>
-		        </tr>
-		      </thead>
-		      <tbody>
-		        {stocks.map((stock, idx) => (
-		          <tr key={idx}>
-		            <td>{stock.ticker}</td>
-		            <td>{stock.name}</td>
-		            <td>${stock.price}</td>
-		            <td>{stock.volume}</td>
-		            <td>{new Date(stock.timestamp).toLocaleTimeString()}</td>
-		          </tr>
-		        ))}
-		      </tbody>
-		    </table>
+		    <h1>Server-Sent Events Demo</h1>
+		    <p>Current Time: {time}</p>
 		    </div>
 	    );
+      console.log(data);
       }
       ReactDOM.render(
         <App />,
