@@ -32,7 +32,7 @@
           console.error('SSE connection error:', error);
           eventSource.close();
         };
-        return () => eventSource.close();
+        return () => eventSource.close(); 
 	      }, []);
 	      return (
 		    <div>
